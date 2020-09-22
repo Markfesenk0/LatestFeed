@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menuGroup"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_dark"
+            android:title="Dark Theme" />
+        <item
+            android:id="@+id/menu_light"
+            android:checked="true"
+            android:title="Light Theme" />
+    </group>
+</menu>
