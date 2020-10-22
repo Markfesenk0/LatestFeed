@@ -1,4 +1,4 @@
-A project I did to learn Android programming. 
+A project I did to learn about Android programming. 
 
 Includes: 
 Parsing XML and Json data from the internet,
