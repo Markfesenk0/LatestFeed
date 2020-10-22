@@ -3,36 +3,43 @@ package com.example.latestfeed;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.latestfeed.Adapters.AppAdapter;
 import com.example.latestfeed.Adapters.DummyAdapter;
-import com.example.latestfeed.Adapters.DummyNewsAdapter;
 import com.example.latestfeed.Adapters.NewsAdapter;
+import com.example.latestfeed.Adapters.PackageAdapter;
+import com.example.latestfeed.Adapters.ParcelAdapter;
 import com.example.latestfeed.Adapters.SongAdapter;
 import com.example.latestfeed.Entities.App;
 import com.example.latestfeed.Entities.News;
 import com.example.latestfeed.Entities.Song;
+import com.example.latestfeed.Entities.TypeEnum;
+import com.example.latestfeed.IsraelPost.Entities.MyPackage;
+import com.example.latestfeed.IsraelPost.Entities.Parcel;
+import com.example.latestfeed.IsraelPost.JVVM.ParcelViewModel;
+import com.example.latestfeed.IsraelPost.PostService;
 import com.example.latestfeed.Parsers.AppParser;
 import com.example.latestfeed.Parsers.NewsParser;
 import com.example.latestfeed.Parsers.SongParser;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,8 +48,28 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNewsListener, AppAdapter.OnAppListener {
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNewsListener, AppAdapter.OnAppListener, SongAdapter.OnSongListener, ParcelAdapter.OnParcelListener, AddPackageDialog.PackageDialogListener {
+
+    static String sequence = "";
+    static PostService postsService;
+    static ArrayList<Parcel> parcels;
+    static ParcelAdapter parcelAdapter;
+    static RecyclerView parcelRecycler;
+    static ParcelViewModel parcelViewModel;
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
@@ -52,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
     static boolean firstTimeSongs;
     static boolean firstTimeFreeApps;
     static boolean firstTimePaidApps;
-    CustomSwipeToRefresh customSwipeToRefresh;
+    static CustomSwipeToRefresh customSwipeToRefresh;
     static RecyclerView topSongsRecycler;
     static RecyclerView topFreeAppsRecycler;
     static RecyclerView topPaidAppsRecycler;
@@ -61,12 +88,12 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
     static ArrayList<App> freeApps;
     static ArrayList<App> paidApps;
     static ArrayList<News> latestNews;
+    static String currentNewsURL = "https://rcs.mako.co.il/rss/MainSliderRss.xml";
     static AppAdapter freeAppsAdapter;
     static AppAdapter paidAppsAdapter;
     static SongAdapter songAdapter;
     static NewsAdapter newsAdapter;
-
-    static DummyNewsAdapter dummyNewsAdapter;
+    static DummyAdapter dummyNewsAdapter;
     static DummyAdapter dummyAdapter;
 
     @Override
@@ -79,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -87,13 +113,16 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         customSwipeToRefresh.setOnRefreshListener(new CustomSwipeToRefresh.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                featuredRecycler();
-                customSwipeToRefresh.setRefreshing(false);
+                featuredRecycler(currentNewsURL);
+                for(Parcel parcel : parcels) {
+                    if(parcel.getStatus() < 2) {
+                        fetchPackage(parcel.getTrackingNumber(), parcel.getTitle(), parcel.getColor());
+                    }
+                }
             }
         });
         initialize();
-        featuredRecycler();
-//        setAdapters();
+        featuredRecycler(currentNewsURL);
     }
 
     @Override
@@ -102,10 +131,34 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         MenuItem menuItem;
         if (isDark) {
             menuItem = menu.findItem(R.id.menu_dark);
-        } else {
-            menuItem = menu.findItem(R.id.menu_light);
+            menuItem.setChecked(true);
         }
-        menuItem.setChecked(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = sharedPref.edit();
+        editor.clear();
+        switch(id) {
+            case R.id.menu_dark:
+                if(isDark) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    editor.putBoolean("isDark", false);
+                    isDark = false;
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    editor.putBoolean("isDark", true);
+                    isDark = true;
+                }
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        editor.apply();
         return true;
     }
 
@@ -118,30 +171,6 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         isDark = sharedPreferences.getBoolean("isDark", check);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        editor = sharedPref.edit();
-        editor.clear();
-        switch(id) {
-            case R.id.menu_dark:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                editor.putBoolean("isDark", true);
-                break;
-
-            case R.id.menu_light:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                editor.putBoolean("isDark", false);
-                break;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        editor.apply();
-        return true;
-    }
-
     private void initialize() {
         topSongsRecycler = findViewById(R.id.top_songs_recycler);
         topFreeAppsRecycler = findViewById(R.id.top_free_apps_recycler);
@@ -151,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         freeApps = new ArrayList<>();
         paidApps = new ArrayList<>();
         latestNews = new ArrayList<>();
-        songAdapter = new SongAdapter(songs);
+        songAdapter = new SongAdapter(songs, this);
         freeAppsAdapter = new AppAdapter(freeApps, this);
         paidAppsAdapter = new AppAdapter(paidApps, this);
         newsAdapter = new NewsAdapter(latestNews, this);
@@ -163,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         topPaidAppsRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         latestNewsRecycler.setHasFixedSize(true);
         latestNewsRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        dummyNewsAdapter = new DummyNewsAdapter();
-        dummyAdapter = new DummyAdapter();
+        dummyNewsAdapter = new DummyAdapter(TypeEnum.NEWS);
+        dummyAdapter = new DummyAdapter(TypeEnum.SONG);
         latestNewsRecycler.setAdapter(dummyNewsAdapter);
         topSongsRecycler.setAdapter(dummyAdapter);
         topFreeAppsRecycler.setAdapter(dummyAdapter);
@@ -173,21 +202,30 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         firstTimeSongs = true;
         firstTimeFreeApps = true;
         firstTimePaidApps = true;
+
+        parcels = new ArrayList<>();
+        parcelRecycler = findViewById(R.id.packages_recycler);
+        parcelRecycler.setHasFixedSize(true);
+        parcelRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        parcelAdapter = new ParcelAdapter(parcels, this, isDark);
+        parcelRecycler.setAdapter(parcelAdapter);
+
+        parcelViewModel = ViewModelProviders.of(this).get(ParcelViewModel.class);
+        parcelViewModel.getAllPackages().observe(this, new Observer<List<Parcel>>() {
+            @Override
+            public void onChanged(List<Parcel> myParcels) {
+                parcels = (ArrayList<Parcel>) myParcels;
+                parcelAdapter.updateData(parcels);
+            }
+        });
+        parcelRecycler.smoothScrollToPosition(0);
     }
 
-    private void setAdapters() {
-        latestNewsRecycler.setAdapter(newsAdapter);
-        topSongsRecycler.setAdapter(songAdapter);
-        topFreeAppsRecycler.setAdapter(freeAppsAdapter);
-        topPaidAppsRecycler.setAdapter(paidAppsAdapter);
-    }
-
-    private void featuredRecycler() {
+    private void featuredRecycler(String url) {
             downloadUrl("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=100/xml", 1);
             downloadUrl("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=100/xml", 2);
             downloadUrl("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/toppaidapplications/limit=100/xml", 3);
-            downloadUrl("https://rcs.mako.co.il/rss/news-israel.xml", 4);
-
+            downloadUrl(url, 4);
     }
 
     private void downloadUrl(String feedUrl, int type) {
@@ -195,7 +233,12 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         downloadData.execute(feedUrl);
     }
 
-    private static class DownloadData extends AsyncTask<String, Void, String> {
+    @Override
+    public void applyInput(String name, String number, int color) {
+        fetchPackage(number, name, color);
+    }
+
+    private class DownloadData extends AsyncTask<String, Void, String> {
         private int type;
         private static final String TAG = "DownloadData";
 
@@ -250,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
                         firstTimeNews = false;
                     }
                     newsAdapter.updateData(latestNews);
+                    customSwipeToRefresh.setRefreshing(false);
+                    break;
             }
         }
 
@@ -300,6 +345,38 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
     }
 
     @Override
+    public void onSongClick(int position) {
+        PreviewMediaPlayer previewMediaPlayer = new PreviewMediaPlayer();
+        Bundle args = new Bundle();
+        args.putSerializable("song", songs.get(position));
+        previewMediaPlayer.setArguments(args);
+        previewMediaPlayer.show(getSupportFragmentManager(), "test");
+    }
+
+    @Override
+    public void onParcelClick(int position) {
+        if (parcels.size() == position) {
+            AddPackageDialog addPackageDialog = new AddPackageDialog();
+            addPackageDialog.show(getSupportFragmentManager(), "tag");
+        } else {
+            ViewPackageDialog addPackageDialog = new ViewPackageDialog();
+            Bundle args = new Bundle();
+            args.putSerializable("package", parcels.get(position));
+            addPackageDialog.setArguments(args);
+            addPackageDialog.show(getSupportFragmentManager(), "test");
+        }
+    }
+
+    @Override
+    public void onParcelLongClick(int position) {
+        if (parcels.size() != position) {
+            parcelViewModel.delete(parcels.get(position));
+            parcels.remove(position);
+            parcelAdapter.updateData(parcels);
+        }
+    }
+
+    @Override
     public void onNewsClick(int position) {
         Intent intent = new Intent(this, NewsActivity.class);
         Bundle bundle = new Bundle();
@@ -319,5 +396,106 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.OnNew
         }
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public void onNewsTopicClick(View view) {
+        String topic = view.getTag().toString();
+        String url = "https://rcs.mako.co.il/rss/MainSliderRss.xml";
+        if (topic.equalsIgnoreCase("israel")) {
+            url = "https://rcs.mako.co.il/rss/news-israel.xml";
+            func(1);
+        } else if (topic.equalsIgnoreCase("global")) {
+            url = "https://rcs.mako.co.il/rss/news-world.xml";
+            func(2);
+        } else if (topic.equalsIgnoreCase("finance")) {
+            url = "https://rcs.mako.co.il/rss/news-money.xml";
+            func(3);
+        } else if (topic.equalsIgnoreCase("food")) {
+            url = "https://rcs.mako.co.il/rss/food-recipes.xml";
+            func(5);
+        } else if (topic.equalsIgnoreCase("criminal")) {
+            url = "https://rcs.mako.co.il/rss/news-law.xml";
+            func(4);
+        }
+        if (sequence.equalsIgnoreCase("15243")) {
+            Toast.makeText(this, "I fucking love Shahar", Toast.LENGTH_SHORT).show();
+        }
+        featuredRecycler(url);
+        currentNewsURL = url;
+        TextView title = findViewById(R.id.title_news);
+        title.setText(topic + " news");
+    }
+
+    public void func(int i) {
+        if (sequence.length() == 5) {
+            sequence = sequence.substring(1);
+        }
+        sequence = sequence + String.valueOf(i);
+    }
+
+    void fetchPackage(final String number, final String title, final int color) {
+        getPostOfficeClientApiService();
+        Call<MyPackage> call = postsService.getDeliveryDetails(getDeliveryBody(number));
+        call.enqueue(new Callback<MyPackage>() {
+            @Override
+            public void onResponse(Call<MyPackage> call, Response<MyPackage> response) {
+                if(response.body() == null) {
+                    Log.e("FAILED", "onResponse: response code " + response.code() + "  ");
+                    Toast.makeText(MainActivity.this, "Error. Try again later", Toast.LENGTH_SHORT).show();
+                } else {
+                    MyPackage myPackage = response.body();
+                    Parcel parcel = new Parcel(number, title, color, myPackage.getResult().getItemcodeinfo().getInfoLines());
+                    if (parcel.getLastStatus().equalsIgnoreCase("error")) {
+                        Toast.makeText(MainActivity.this, "Malformed number. Try again", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (parcels.contains(parcel)) {
+                            parcels.remove(parcels.indexOf(parcel));
+                            parcels.add(parcel);
+                            parcelViewModel.update(parcel);
+                            parcelAdapter.updateData(parcels);
+                        } else {
+                            parcels.add(parcel);
+                            parcelViewModel.insert(parcel);
+                            parcelAdapter.updateData(parcels);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyPackage> call, Throwable t) {
+                Log.e("POST: onFailure: ", t.getMessage().toString());
+                Toast.makeText(MainActivity.this, "No response:\n" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private static Map<String, String> getDeliveryBody(String trackingNumber) {
+        HashMap localHashMap = new HashMap();
+        localHashMap.put("itemCode", trackingNumber);
+        localHashMap.put("lcid", "1033"); //1033 - Hebrew, 1037 - English
+        localHashMap.put("__RequestVerificationToken", "IFj9bHi37NeXmMTgov3QlHXFxG7p3pHDTWQa8PEAZ8Nca9Md1v4ksUlpPVmBIYlGrhi9Xm3t4Ap9jfZKNGPPMhpV2VGbxw2JoalUI1KuuUY1");
+        return localHashMap;
+    }
+
+    private void getPostOfficeClientApiService() {
+        if (postsService == null) {
+            postsService = getApiService(60L);
+        }
+    }
+
+    public PostService getApiService(long paramLong) {
+        OkHttpClient localOkHttpClient = new OkHttpClient.Builder().readTimeout(paramLong, TimeUnit.SECONDS).writeTimeout(paramLong, TimeUnit.SECONDS).connectTimeout(paramLong, TimeUnit.SECONDS).addInterceptor(new Interceptor()
+        {
+            @NotNull
+            public okhttp3.Response intercept(@NotNull Interceptor.Chain paramAnonymousChain)
+                    throws IOException
+            {
+                Request localRequest = paramAnonymousChain.request();
+                return paramAnonymousChain.proceed(localRequest.newBuilder().method(localRequest.method(), localRequest.body()).build());
+            }
+        }).build();
+        return (PostService)new Retrofit.Builder().client(localOkHttpClient).baseUrl("https://mypost.israelpost.co.il").addConverterFactory(GsonConverterFactory.create()).build().create(PostService.class);
     }
 }

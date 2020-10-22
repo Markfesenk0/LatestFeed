@@ -1,4 +1,4 @@
-package com.example.latestfeed;
+package com.example.latestfeed.Adapters;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;

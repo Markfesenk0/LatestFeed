@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00897b</color>
-    <color name="colorPrimaryDark">#00796b</color>
-    <color name="colorAccent">#00796b</color>
-    <color name="cardBackground">#e0f2f1</color>
-    <color name="backgroundColor">#e0f7fa</color>
+    <color name="colorPrimary">#00838f</color>
+    <color name="colorPrimaryDark">#006064</color>
+    <color name="colorAccent">#006064</color>
+    <color name="titleTextColor">#37474f</color>
+    <color name="cardBackground">#B2DFDB</color>
+    <color name="favoriteBackground">#0097a7</color>
+    <color name="favoriteIconColor">#e0f7fa</color>
+    <color name="backgroundColor">#ffffff</color>
+    <color name="backgroundColorBackup">#e0f7fa</color>
     <color name="bannerColor">#b0bec5</color>
-    <color name="titleColor">#90a4ae</color>
-    <color name="mainText">#2D313D</color>
-    <color name="textAlt">#8D8F97</color>
-    <color name="textColor">#263238</color>
+    <color name="titleColor">#37474f</color>
+    <color name="mainText">#e0f7fa</color>
+    <color name="textAlt">#424242</color>
+    <color name="textColor">#e0f7fa</color>
+    <color name="clickableText">#1E88E5</color>
+    <color name="packageTextColor">#000000</color>
+
+    <array name="demo_colors">
+        <item>@color/white</item>
+        <item>@color/red</item>
+        <item>@color/yellow</item>
+        <item>@color/green</item>
+        <item>@color/pink</item>
+        <item>@color/cyan</item>
+    </array>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="red">#ef5350</color>
+    <color name="yellow">#fff176</color>
+    <color name="green">#66bb6a</color>
+    <color name="pink">#f06292</color>
+    <color name="cyan">#00bcd4</color>
+    <color name="orange">#ff9100</color>
 
 </resources>

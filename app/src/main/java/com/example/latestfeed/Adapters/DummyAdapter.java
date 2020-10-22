@@ -8,14 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.latestfeed.R;
+import com.example.latestfeed.Entities.TypeEnum;
 
 import java.util.ArrayList;
 
 public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.DummyViewHolder> {
 
-    ArrayList<String> dummyList;
+    private TypeEnum type;
+    private ArrayList<String> dummyList;
 
-    public DummyAdapter() {
+    public DummyAdapter(TypeEnum type) {
+        this.type = type;
         this.dummyList = new ArrayList<>();
         for(int i = 0; i < 10; i++) {
             dummyList.add("a");
@@ -25,7 +28,12 @@ public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.DummyViewHol
     @NonNull
     @Override
     public DummyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dummy_design, parent, false);
+        View view;
+        if (this.type == TypeEnum.NEWS) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dummy_news_design, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dummy_design, parent, false);
+        }
         return new DummyViewHolder(view);
     }
 

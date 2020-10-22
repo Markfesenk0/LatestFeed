@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NewsActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:backgroundTint="@color/backgroundColor"
+    android:background="@color/backgroundColor">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="bottom"
             android:layout_alignBottom="@id/article_image">
 
             <TextView
@@ -28,19 +31,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Creator"
-                android:textColor="@color/textColor"
+                android:textColor="@color/titleColor"
                 android:paddingLeft="16dp"
                 android:textAlignment="textStart"
                 android:background="@color/backgroundColor"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/article_publish_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Author"
-                android:textColor="@color/textColor"
-                android:textAlignment="textEnd"
+                android:textColor="@color/titleColor"
+
+                android:gravity="end"
                 android:paddingRight="16dp"
                 android:background="@color/backgroundColor"
                 android:layout_weight="1"/>
@@ -72,9 +76,19 @@
                 android:id="@+id/article_summary"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="16dp"
-                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                android:textColor="@color/titleColor"
                 android:text="News summary"
+                android:layout_margin="16dp"/>
+
+            <TextView
+                android:id="@+id/article_body"
+                android:onClick="openLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="@color/clickableText"
+                android:text="View full article"
                 android:layout_margin="16dp"/>
 
         </LinearLayout>

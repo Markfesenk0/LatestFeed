@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.latestfeed.Entities.Song;
-import com.example.latestfeed.MyDiffUtilCallback;
 import com.example.latestfeed.R;
 import com.example.latestfeed.Entities.App;
 import com.squareup.picasso.Picasso;
@@ -28,7 +26,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
     }
 
     public void insertDate(ArrayList<App> insertList) {
-        //This function will add new data to RecyclerView
+        //This function will package_add_white new data to RecyclerView
         MyDiffUtilCallback<App> diffUtilCallback = new MyDiffUtilCallback<>(apps, insertList);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
         apps.addAll(insertList);
@@ -47,17 +45,27 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
     @NonNull
     @Override
     public AppViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_design, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return new AppViewHolder(view, mOnAppListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         App app = apps.get(position);
-        Picasso.get().load(app.getImgUrl()).into(holder.image);
+        try {
+            Picasso.get().load(app.getImgUrl()).into(holder.image);
+        } catch (IllegalArgumentException e) {
+            Picasso.get().load(R.drawable.placeholder).into(holder.image);
+            System.out.println(e.getMessage());
+        }
         holder.title.setText(app.getTitle());
         holder.artist.setText(app.getArtist());
         holder.price.setText(app.getPrice());
+    }
+
+    @Override
+    public int getItemViewType(final int position) {
+        return R.layout.app_design;
     }
 
     @Override

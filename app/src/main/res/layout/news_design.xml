@@ -21,7 +21,6 @@
             app:cardCornerRadius="8dp"
             android:elevation="8dp">
 
-
             <ImageView
                 android:id="@+id/news_image"
                 android:layout_width="180dp"
@@ -29,16 +28,6 @@
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 android:src="@color/bannerColor"/>
-
-            <TextView
-                android:id="@+id/news_creator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Creator"
-                android:textColor="@color/textColor"
-                android:layout_gravity="bottom"
-                android:paddingLeft="4dp"
-                android:background="@color/backgroundColor"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -49,7 +38,7 @@
             android:textSize="18sp"
             android:paddingTop="8dp"
             android:text="News Headline"
-            android:textColor="@color/textAlt"
+            android:textColor="@color/titleTextColor"
             android:textStyle="bold"
             android:layout_weight="1"/>
 

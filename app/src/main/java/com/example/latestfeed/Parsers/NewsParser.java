@@ -66,7 +66,7 @@ public class NewsParser {
                             }  else if ("image624X383".equalsIgnoreCase(tagName)) {
                                 currentRecord.setImgUrl(textValue);
                             } else if ("shortDescription".equalsIgnoreCase(tagName)) {
-                                currentRecord.setBody(textValue);
+                                currentRecord.setSnippet(textValue);
                             }
 
 //                            else if ("description".equalsIgnoreCase(tagName)) {

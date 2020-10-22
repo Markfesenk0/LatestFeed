@@ -8,6 +8,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import javax.xml.bind.SchemaOutputResolver;
+
 public class SongParser {
     private static ArrayList<Song> songs;
 
@@ -38,6 +40,12 @@ public class SongParser {
                         if ("entry".equalsIgnoreCase(tagName)) {
                             inEntry = true;
                             currentRecord = new Song();
+                        } else if ("link".equalsIgnoreCase(tagName)) {
+                            String link = xpp.getAttributeValue(null, "href");
+                            String title = xpp.getAttributeValue(null, "title");
+                            if (title != null && title.equalsIgnoreCase("preview")) {
+                                currentRecord.setPreviewUrl(link);
+                            }
                         }
                         break;
 
@@ -61,6 +69,12 @@ public class SongParser {
                                 }
                             } else if ("image".equalsIgnoreCase(tagName)) {
                                 currentRecord.setImgUrl(textValue);
+                            } else if ("link".equalsIgnoreCase(tagName)) {
+                                currentRecord.setSongUrl(textValue);
+                                String href = xpp.getAttributeValue(null, "href");
+                                if (href != null) {
+                                    currentRecord.setSongUrl(href);
+                                }
                             }
                         }
                         break;

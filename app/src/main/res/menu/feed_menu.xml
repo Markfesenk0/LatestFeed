@@ -8,10 +8,6 @@
 
         <item
             android:id="@+id/menu_dark"
-            android:title="Dark Theme" />
-        <item
-            android:id="@+id/menu_light"
-            android:checked="true"
-            android:title="Light Theme" />
+            android:title="@string/dark_theme" />
     </group>
 </menu>

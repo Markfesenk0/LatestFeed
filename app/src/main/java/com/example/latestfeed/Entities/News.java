@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class News implements Serializable {
     private String title;
+    private String snippet;
     private String creator;
     private String body;
     private String publishDate;
@@ -13,6 +14,14 @@ public class News implements Serializable {
     private String newsUrl;
 
     public News() {
+    }
+
+    public String getSnippet() {
+        return snippet;
+    }
+
+    public void setSnippet(String snippet) {
+        this.snippet = snippet;
     }
 
     public String getTitle() {

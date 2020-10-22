@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:elevation="12dp"
+    app:layout_constraintCircleRadius="20dp">
+
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:hint="Package name"/>
+
+    <EditText
+        android:id="@+id/edit_tracking_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tracking number"
+        android:textSize="20sp"
+        android:layout_below="@id/edit_name"
+        android:layout_alignParentStart="true"/>
+
+    <com.thebluealliance.spectrum.SpectrumPalette
+        android:id="@+id/palette"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_tracking_number"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        app:spectrum_autoPadding="true"
+        app:spectrum_colors="@array/demo_colors"/>
+
+</RelativeLayout>

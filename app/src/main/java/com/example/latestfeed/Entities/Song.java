@@ -2,12 +2,16 @@ package com.example.latestfeed.Entities;
 
 import androidx.annotation.Nullable;
 
-public class Song {
+import java.io.Serializable;
+
+public class Song implements Serializable {
 
     private String title;
     private String artist;
     private String category;
     private String imgUrl;
+    private String previewUrl;
+    private String songUrl;
 
     public Song() {
     }
@@ -49,6 +53,22 @@ public class Song {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+
+    public void setPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
+    }
+
+    public String getSongUrl() {
+        return songUrl;
+    }
+
+    public void setSongUrl(String songUrl) {
+        this.songUrl = songUrl;
     }
 
     @Override

@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="Title"
                 android:textSize="20sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/titleColor"
                 android:textStyle="bold"
                 android:layout_margin="14dp"
                 android:layout_weight="1"/>
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:text="Title"
                 android:textSize="20sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/titleColor"
                 android:layout_margin="14dp"
                 android:layout_weight="1"/>
 
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="Price"
                 android:textSize="20sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/titleColor"
                 android:layout_margin="14dp"
                 android:layout_weight="1"/>
 
@@ -70,7 +70,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:id="@+id/application_summary"
@@ -78,8 +79,8 @@
             android:layout_height="match_parent"
             android:text="Summary"
             android:textSize="16sp"
-            android:textColor="@color/textColor"
-            android:layout_margin="12dp"/>
+            android:textColor="@color/titleColor"
+            android:padding="10dp"/>
 
     </ScrollView>
 

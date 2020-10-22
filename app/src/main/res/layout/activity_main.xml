@@ -25,17 +25,206 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:elevation="15dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_margin="10dp"
+                            android:tag="israel"
+                            android:onClick="onNewsTopicClick">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:cardCornerRadius="30dp"
+                                android:backgroundTint="@color/favoriteBackground">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_israel"
+                                    app:tint="@color/favoriteIconColor" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/israel"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textColor="@color/titleColor"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_margin="10dp"
+                            android:tag="global"
+                            android:onClick="onNewsTopicClick">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:cardCornerRadius="30dp"
+                                android:backgroundTint="@color/favoriteBackground">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_global"
+                                    app:tint="@color/favoriteIconColor"/>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/global"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textColor="@color/titleColor"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_margin="10dp"
+                            android:tag="finance"
+                            android:onClick="onNewsTopicClick">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:cardCornerRadius="30dp"
+                                android:backgroundTint="@color/favoriteBackground">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_finance"
+                                    app:tint="@color/favoriteIconColor"/>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/finance"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textColor="@color/titleColor"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_margin="10dp"
+                            android:tag="criminal"
+                            android:onClick="onNewsTopicClick">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:cardCornerRadius="30dp"
+                                android:backgroundTint="@color/favoriteBackground">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_criminal"
+                                    app:tint="@color/favoriteIconColor"/>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/criminal"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textColor="@color/titleColor"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_margin="10dp"
+                            android:tag="food"
+                            android:onClick="onNewsTopicClick">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:cardCornerRadius="30dp"
+                                android:backgroundTint="@color/favoriteBackground">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_food"
+                                    app:tint="@color/favoriteIconColor"/>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/food"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textColor="@color/titleColor"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:orientation="vertical"
                     android:elevation="30dp">
 
                     <TextView
+                        android:id="@+id/title_news"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_bold"
-                        android:paddingLeft="12dp"
-                        android:text="Latest News"
-                        android:textColor="@color/textColor"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="@string/latest_news"
+                        android:textColor="@color/titleColor"
                         android:textAllCaps="true"
                         android:textSize="24sp" />
 
@@ -58,9 +247,46 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_bold"
-                        android:paddingLeft="12dp"
-                        android:text="Top Songs"
-                        android:textColor="@color/textColor"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="@string/tracked_packages"
+                        android:textColor="@color/titleColor"
+                        android:textAllCaps="true"
+                        android:textSize="24sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/packages_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp"
+                            android:layout_gravity="center_vertical">
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical"
+                    android:elevation="30dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="@string/top_songs"
+                        android:textColor="@color/titleColor"
                         android:textAllCaps="true"
                         android:textSize="24sp" />
 
@@ -83,9 +309,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_bold"
-                        android:paddingLeft="12dp"
-                        android:text="Top Free Apps"
-                        android:textColor="@color/textColor"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="@string/top_free_apps"
+                        android:textColor="@color/titleColor"
                         android:textAllCaps="true"
                         android:textSize="24sp" />
 
@@ -109,9 +336,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_bold"
-                        android:paddingLeft="12dp"
-                        android:text="Top Paid Apps"
-                        android:textColor="@color/textColor"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="@string/top_paid_apps"
+                        android:textColor="@color/titleColor"
                         android:textAllCaps="true"
                         android:textSize="24sp" />
 

@@ -8,22 +8,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.latestfeed.Entities.News;
-import com.example.latestfeed.Entities.Song;
-import com.example.latestfeed.MyDiffUtilCallback;
 import com.example.latestfeed.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
     private ArrayList<News> newsList;
     private OnNewsListener mOnNewsListener;
-
 
     public NewsAdapter(ArrayList<News> insertList, OnNewsListener onNewsListener) {
         this.newsList = insertList;
@@ -31,7 +26,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     }
 
     public void insertDate(ArrayList<News> insertList) {
-        //This function will add new data to RecyclerView
+        //This function will package_add_white new data to RecyclerView
         MyDiffUtilCallback<News> diffUtilCallback = new MyDiffUtilCallback<>(newsList, insertList);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
         newsList.addAll(insertList);
@@ -50,17 +45,27 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     @NonNull
     @Override
     public NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_design, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return new NewsViewHolder(view, mOnNewsListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
         News news = newsList.get(position);
-        Picasso.get().load(news.getImgUrl()).into(holder.image);
+        try {
+            Picasso.get().load(news.getImgUrl()).into(holder.image);
+        } catch (IllegalArgumentException e) {
+            Picasso.get().load(R.drawable.placeholder).into(holder.image);
+            System.out.println(e.getMessage());
+        }
         holder.title.setText(news.getTitle());
-        holder.creator.setText(news.getCreator());
+//        holder.creator.setText(news.getCreator());
         holder.publishDate.setText(news.getPublishDate());
+    }
+
+    @Override
+    public int getItemViewType(final int position) {
+        return R.layout.news_design;
     }
 
     @Override
@@ -78,7 +83,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             super(itemView);
             image = itemView.findViewById(R.id.news_image);
             title = itemView.findViewById(R.id.news_title);
-            creator = itemView.findViewById(R.id.news_creator);
+//            creator = itemView.findViewById(R.id.news_creator);
             publishDate = itemView.findViewById(R.id.news_publish_date);
 
             this.onNewsListener = onNewsListener;
