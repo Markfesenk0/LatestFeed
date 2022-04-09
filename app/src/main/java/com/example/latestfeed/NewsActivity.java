@@ -33,8 +33,6 @@ import java.net.URL;
 public class NewsActivity extends AppCompatActivity {
 
     ImageView articleImage;
-    TextView articleCreator;
-    TextView articlePublishDate;
     TextView articleTitle;
     TextView articleSummary;
     TextView articleBody;
@@ -45,8 +43,6 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
         articleImage = findViewById(R.id.article_image);
-        articleCreator = findViewById(R.id.article_creator);
-        articlePublishDate = findViewById(R.id.article_publish_date);
         articleTitle = findViewById(R.id.article_title);
         articleSummary = findViewById(R.id.article_summary);
         articleBody = findViewById(R.id.article_body);
@@ -60,13 +56,7 @@ public class NewsActivity extends AppCompatActivity {
             } catch (IllegalArgumentException e) {
                 Picasso.get().load(R.drawable.placeholder).into(articleImage);
             }
-            if (news.getCreator().length() != 7) {
-                articleCreator.setText(news.getCreator());
-            } else {
-                articleCreator.setText("");
-            }
             System.out.println(news.getCreator().length());
-            articlePublishDate.setText(news.getPublishDate());
             articleTitle.setText(news.getTitle());
             articleSummary.setText(news.getSnippet());
         }

@@ -59,8 +59,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             System.out.println(e.getMessage());
         }
         holder.title.setText(news.getTitle());
-//        holder.creator.setText(news.getCreator());
-        holder.publishDate.setText(news.getPublishDate());
     }
 
     @Override
@@ -76,16 +74,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     public static class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView image;
-        TextView title, creator, publishDate;
+        TextView title;
         OnNewsListener onNewsListener;
 
         public NewsViewHolder(@NonNull View itemView, OnNewsListener onNewsListener) {
             super(itemView);
             image = itemView.findViewById(R.id.news_image);
             title = itemView.findViewById(R.id.news_title);
-//            creator = itemView.findViewById(R.id.news_creator);
-            publishDate = itemView.findViewById(R.id.news_publish_date);
-
             this.onNewsListener = onNewsListener;
             itemView.setOnClickListener(this);
         }
