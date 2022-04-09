@@ -5,12 +5,14 @@
     <string name="top_free_apps">Top Free Apps</string>
     <string name="top_songs">Top Songs</string>
     <string name="tracked_packages">tracked packages</string>
+    <string name="iherb_items">iherb items</string>
     <string name="israel">Israel</string>
     <string name="global">Global</string>
     <string name="finance">Finance</string>
     <string name="food">Food</string>
     <string name="criminal">Criminal</string>
     <string name="add_new_package">Add new package</string>
+    <string name="add_iherb_item">Add new iHerb item</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="zero">0:00</string>
 </resources>
